@@ -1,16 +1,16 @@
 <template>
 
 <div class="row rounded border shadow py-2 align-items-center">
-    <div class="col">
+    <div class="col-12 text-center col-md-6 col-xxl text-xxl-start">
         <span class="">{{ task.title }}</span>&ensp;
         <span>(от {{ creationDate }})</span>
     </div><!--  name of task  -->
-    <div class="col-2 text-end">
+    <div class="col-12 text-center col-md-6 col-xxl-2 text-xxl-end">
         <span class="">
             {{ deadEndDate }}
         </span>
     </div><!--  date of create  -->
-    <div id="btn-interface" class="col-3 text-end">
+    <div id="btn-interface" class="col-12 text-center col-xxl-3 text-xxl-end">
         <button class="btn btn-outline-danger">
             <img src="@/../public/icons/trash-can-icon.png" alt="delete" class="icon">
         </button><!--  delete  -->
