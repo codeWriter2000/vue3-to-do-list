@@ -17,7 +17,7 @@
             <img src="@/../public/icons/sort-icon.png" alt="sort" class="icon">
         </button>
 
-        <button id="add-tusk" class="btn btn-outline-primary col col-lg-2 fw-bold fs-6 shadow">
+        <button id="add-tusk" class="btn btn-outline-primary col col-lg-2 fw-bold fs-6 shadow" @click="$emit('addNewTask')">
             Добавить
         </button><!--  add new tusk  -->
 
@@ -30,7 +30,7 @@
 
 export default {
     name: 'AppHeaderBlock',
-    emits: ['showInfo'],
+    emits: ['showInfo', 'addNewTask'],
     data() {
         return {
             theme: true,

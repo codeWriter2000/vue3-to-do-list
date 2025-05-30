@@ -31,8 +31,9 @@ export default {
     },
     data() {
         return {
-            localTaskList: {
-                'tusk-1': {
+            localTaskList: [
+                {
+                    id: 'tusk-1',
                     create: new Date(),
                     deadEnd: new Date(),
                     priority: 0,
@@ -41,7 +42,7 @@ export default {
                     status: false,
 
                 },
-            }, // объект объектов задач
+            ], // список объектов задач
         };
     },
 };

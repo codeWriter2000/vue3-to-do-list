@@ -1,7 +1,14 @@
 <template>
+    <ModalWindow ref="modal">
+        <template #modal-content>
+            <TaskForm :task="{}"/>
+        </template>
+    </ModalWindow><!--  component w teleport to index.html (modal form container)  -->
     <div id="main-content" class="container p-3">
         <h1 id="app-header" class="fs-1 text-uppercase fw-bold">Vue TO-DO app</h1>
-        <AppHeaderBtnBlock @showInfo="showInfoBanner"
+        <AppHeaderBtnBlock
+            @showInfo="showInfoBanner"
+            @addNewTask="showModalWindow"
         />
         <AppTaskWrap/>
     </div>
@@ -13,6 +20,8 @@
 import AppHeaderBtnBlock from '@/components/AppHeaderBtnBlock.vue';
 import AppTaskWrap from '@/components/AppTaskWrap.vue';
 import BannerWrap from '@/components/BannerWrap.vue';
+import ModalWindow from '@/components/ModalWindow.vue';
+import TaskForm from '@/components/TaskForm.vue';
 
 
 export default {
@@ -22,6 +31,8 @@ export default {
         AppHeaderBtnBlock,
         AppTaskWrap,
         BannerWrap,
+        ModalWindow,
+        TaskForm,
     },
     data() {
         return {};
@@ -30,6 +41,9 @@ export default {
         showInfoBanner() {
             const info = 'Информация';
             this.$refs.banner.showBanner(info);
+        },
+        showModalWindow() {
+            this.$refs.modal.showModal()
         },
     },
 };

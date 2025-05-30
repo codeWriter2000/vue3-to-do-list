@@ -6,7 +6,7 @@
         v-if="this.isVisible"
         v-html="content"
         @click="hideBanner"
-        id="banner" class="container fixed-bottom mb-5 rounded shadow p-2 my-3 border border-info"
+        id="banner" class="container fixed-bottom mb-5 rounded shadow p-2 my-3 w-50 border border-info"
     ></div>
 
 </teleport><!--  teleported information banner  -->
@@ -50,10 +50,9 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 
 #banner {
-    width: 75vw;
     height: auto;
     z-index: 10;
     cursor: pointer;
