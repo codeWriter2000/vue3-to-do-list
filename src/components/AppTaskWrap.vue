@@ -7,7 +7,7 @@
         </div>
     </div><!--  task header  -->
     <div id="task-container" class="row overflow-auto flex-grow-1 py-2 px-2 el-w-scroll">
-        <div v-if="localTaskList">
+        <div v-if="localTaskList.length">
             <TaskBlock v-for="(item, idx) in localTaskList" :key="idx" :task="item" :id="idx"/>
         </div>
         <div v-else>
@@ -22,6 +22,7 @@
 
 <script>
 
+import { inject } from 'vue';
 import TaskBlock from '@/components/TaskBlock.vue';
 
 export default {
@@ -29,20 +30,13 @@ export default {
     components: {
         TaskBlock,
     },
+    setup() {
+        const taskStorage = inject('taskStorage');
+        return { taskStorage };
+    },
     data() {
         return {
-            localTaskList: [
-                {
-                    id: 'tusk-1',
-                    create: new Date(),
-                    deadEnd: new Date(),
-                    priority: 0,
-                    title: 'Новая задача',
-                    comment: 'Сопроводительный текст к нашей задаче',
-                    status: false,
-
-                },
-            ], // список объектов задач
+            localTaskList: this.taskStorage, // список объектов задач
         };
     },
 };

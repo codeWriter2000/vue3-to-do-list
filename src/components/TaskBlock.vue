@@ -1,6 +1,6 @@
 <template>
 
-<div class="row rounded border shadow py-2 align-items-center">
+<div class="row rounded border shadow py-2 align-items-center mb-2">
     <div class="col-12 text-center col-md-6 col-xxl text-xxl-start">
         <span class="">{{ task.title }}</span>&ensp;
         <span>(от {{ creationDate }})</span>
@@ -11,7 +11,7 @@
         </span>
     </div><!--  date of create  -->
     <div id="btn-interface" class="col-12 text-center col-xxl-3 text-xxl-end">
-        <button class="btn btn-outline-danger">
+        <button class="btn btn-outline-danger" @click="deleteMe">
             <img src="@/../public/icons/trash-can-icon.png" alt="delete" class="icon">
         </button><!--  delete  -->
         <button class="btn btn-outline-warning">
@@ -21,7 +21,7 @@
             <img v-if="this.isShow" src="@/../public/icons/hide-icon.png" alt="hide" class="icon">
             <img v-else src="@/../public/icons/show-icon.png" alt="show" class="icon">
         </button><!--  show comment  -->
-        <button :class="['btn', isDone ? 'btn-success' : 'btn-outline-success']" @click="changeTaskStatus"
+        <button :class="['btn', isDone ? 'btn-success' : 'btn-outline-success']" @click="changeStatus"
         >
             <img src="@/../public/icons/done-icon.png" alt="done" class="icon">
         </button><!--  change status  -->
@@ -41,6 +41,9 @@
 
 <script>
 
+import { inject } from 'vue';
+import { delTask, changeTaskStatus } from '@/app-logic/appLocalStorageLogic';
+
 export default {
     name: 'TaskBlock',
     emits: [],
@@ -49,6 +52,10 @@ export default {
             type: Object,
             required: true,
         },
+    },
+    setup() {
+        const taskStorage = inject('taskStorage');
+        return { taskStorage };
     },
     data() {
         return {
@@ -66,7 +73,8 @@ export default {
             };
 
             if (this.task.create) {
-                exStr = this.task.create.toLocaleDateString('ru-RU', options);
+                const creationDate = new Date(this.task.create);
+                exStr = creationDate.toLocaleDateString('ru-RU', options);
             } else {
                 exStr = '...'
             }
@@ -82,18 +90,21 @@ export default {
             };
 
             const now = new Date();
-            const dateCondition = this.task.deadEnd.getDate() === now.getDate();
-            const monthCondition = this.task.deadEnd.getMonth() === now.getMonth();
-            const yearCondition = this.task.deadEnd.getFullYear() === now.getFullYear();
 
             if (this.task.deadEnd) {
+                const deadEnd = new Date(this.task.deadEnd);
+                
+                const dateCondition = deadEnd.getDate() === now.getDate();
+                const monthCondition = deadEnd.getMonth() === now.getMonth();
+                const yearCondition = deadEnd.getFullYear() === now.getFullYear();
+                
                 if (dateCondition && monthCondition && yearCondition) {
                     exStr = 'срок сегодня';
                 } else {
-                    exStr = `срок до ${this.task.deadEnd.toLocaleDateString('ru-RU', options)}`;
+                    exStr = `срок до ${deadEnd.toLocaleDateString('ru-RU', options)}`;
                 }
             } else {
-                exStr = '';
+                exStr = '-';
             }
 
             return exStr;
@@ -103,9 +114,16 @@ export default {
         changeVisibility() {
             this.isShow = !this.isShow;
         }, // смена состояния отображения комментария к задаче
-        changeTaskStatus() {
+        changeStatus() {
             this.isDone = !this.isDone;
+            changeTaskStatus(this.task.id, this.taskStorage);
         }, // смена статуса задачи
+        deleteMe() {
+            const decision = confirm(`Вы удаляете задачу с названием - ${this.task.title}`);
+            if (decision) {
+                delTask(this.task.id, this.taskStorage);
+            }
+        }, // удаление задачи из local storage
     },
 };
 

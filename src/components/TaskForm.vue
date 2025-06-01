@@ -33,7 +33,7 @@
             </label><!--  task comment  -->
         </div>
         <div class="row justify-content-center my-3">
-            <button id="save-btn" class="btn btn-primary col-4">
+            <button @click.prevent="saveBtnClick" id="save-btn" class="btn btn-primary col-4">
                 Сохранить
             </button>
         </div>
@@ -45,7 +45,9 @@
 
 <script>
 
-import { priorityDict } from '@/app-logic/staticData'
+import { inject } from 'vue';
+import { priorityDict } from '@/app-logic/staticData';
+import { addNewTask } from '@/app-logic/appLocalStorageLogic';
 
 export default {
     name: 'TaskForm',
@@ -56,6 +58,10 @@ export default {
             required: true,
         }
     },
+    setup() {
+        const taskStorage = inject('taskStorage');
+        return { taskStorage };
+    },
     data() {
         return {
             taskPriority: { ...priorityDict },
@@ -64,7 +70,7 @@ export default {
     },
     computed: {
         formTitle() {
-            return Object.keys(this.localTask).length ? 'Редактирование задачи' : 'Добавление задачи';
+            return Object.keys(this.task).length ? 'Редактирование задачи' : 'Добавление задачи';
         },
         formattedDateOfDeadEnd: {
             get() {
@@ -82,6 +88,12 @@ export default {
                 this.localTask.deadEnd = value ? new Date(value) : null;
             }
         },
+    },
+    methods: {
+        saveBtnClick() {
+            console.log(this.taskStorage);
+            addNewTask(this.localTask, this.taskStorage);
+        }
     },
 };
 
