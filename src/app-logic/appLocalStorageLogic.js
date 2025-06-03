@@ -9,7 +9,6 @@ function genTaskID() {
     return randNum.toString().split('.')[1];
 } // task id generation
 
-
 export function ToDoAppInit() {
     const ts = localStorage.getItem(keyName);
     const defaultVal = [];
@@ -55,3 +54,11 @@ export function changeTaskStatus(id, taskListRef) {
     const index = taskListRef.findIndex(obj => obj.id === id);
     taskListRef[index].status = !taskListRef[index].status;
 } // function to change status of task
+
+export function editTask(taskObj, taskListRef) {
+    // taskObj - object with task data and information
+    // taskListRef - reactive array with task objects
+
+    const index = taskListRef.findIndex(obj => obj.id === taskObj.id);
+    Object.assign(taskListRef[index], taskObj);
+} // function to edit data about task

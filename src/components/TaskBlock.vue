@@ -1,11 +1,22 @@
 <template>
 
+<ModalWindow ref="modalEdit">
+    <template #modal-content>
+        <TaskForm :task="task" @closeModal="closeModalWindow"/>
+    </template>
+</ModalWindow><!--  component w teleport to index.html (modal form container)  -->
+
 <div class="row rounded border shadow py-2 align-items-center mb-2">
-    <div class="col-12 text-center col-md-6 col-xxl text-xxl-start">
+    <div class="col-12 text-center col-xxl text-xxl-start">
         <span class="">{{ task.title }}</span>&ensp;
         <span>(от {{ creationDate }})</span>
     </div><!--  name of task  -->
-    <div class="col-12 text-center col-md-6 col-xxl-2 text-xxl-end">
+    <div class="col-12 text-center col-xxl-2">
+        <span class="">
+            {{ taskPriority }}
+        </span>
+    </div><!--  priority of task  -->
+    <div class="col-12 text-center col-xxl-2">
         <span class="">
             {{ deadEndDate }}
         </span>
@@ -14,7 +25,7 @@
         <button class="btn btn-outline-danger" @click="deleteMe">
             <img src="@/../public/icons/trash-can-icon.png" alt="delete" class="icon">
         </button><!--  delete  -->
-        <button class="btn btn-outline-warning">
+        <button class="btn btn-outline-warning" @click="showModalWindow">
             <img src="@/../public/icons/edit-icon.png" alt="edit" class="icon">
         </button><!--  edit  -->
         <button class="btn btn-outline-primary" @click="changeVisibility">
@@ -41,7 +52,11 @@
 
 <script>
 
+import ModalWindow from '@/components/ModalWindow.vue';
+import TaskForm from '@/components/TaskForm.vue';
+
 import { inject } from 'vue';
+import { priorityDict } from '@/app-logic/staticData';
 import { delTask, changeTaskStatus } from '@/app-logic/appLocalStorageLogic';
 
 export default {
@@ -52,6 +67,10 @@ export default {
             type: Object,
             required: true,
         },
+    },
+    components: {
+        ModalWindow,
+        TaskForm,
     },
     setup() {
         const taskStorage = inject('taskStorage');
@@ -93,11 +112,11 @@ export default {
 
             if (this.task.deadEnd) {
                 const deadEnd = new Date(this.task.deadEnd);
-                
+
                 const dateCondition = deadEnd.getDate() === now.getDate();
                 const monthCondition = deadEnd.getMonth() === now.getMonth();
                 const yearCondition = deadEnd.getFullYear() === now.getFullYear();
-                
+
                 if (dateCondition && monthCondition && yearCondition) {
                     exStr = 'срок сегодня';
                 } else {
@@ -109,6 +128,9 @@ export default {
 
             return exStr;
         }, // свойство вычисляющее конечную дату выполнения задачи (русская локаль)
+        taskPriority() {
+            return this.task.priority ? priorityDict[this.task.priority] : 'приоритет не задан';
+        }
     },
     methods: {
         changeVisibility() {
@@ -124,6 +146,12 @@ export default {
                 delTask(this.task.id, this.taskStorage);
             }
         }, // удаление задачи из local storage
+        showModalWindow() {
+            this.$refs.modalEdit.showModal();
+        },
+        closeModalWindow() {
+            this.$refs.modalEdit.hideModal();
+        },
     },
 };
 

@@ -1,7 +1,7 @@
 <template>
     <ModalWindow ref="modal">
         <template #modal-content>
-            <TaskForm :task="{}"/>
+            <TaskForm :task="{}" @closeModal="closeModalWindow"/>
         </template>
     </ModalWindow><!--  component w teleport to index.html (modal form container)  -->
     <div id="main-content" class="container p-3">
@@ -23,7 +23,6 @@ import BannerWrap from '@/components/BannerWrap.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import TaskForm from '@/components/TaskForm.vue';
 
-
 export default {
     name: 'MainAppView',
     emits: [],
@@ -43,7 +42,10 @@ export default {
             this.$refs.banner.showBanner(info);
         },
         showModalWindow() {
-            this.$refs.modal.showModal()
+            this.$refs.modal.showModal();
+        },
+        closeModalWindow() {
+            this.$refs.modal.hideModal();
         },
     },
 };

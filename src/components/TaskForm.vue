@@ -47,11 +47,11 @@
 
 import { inject } from 'vue';
 import { priorityDict } from '@/app-logic/staticData';
-import { addNewTask } from '@/app-logic/appLocalStorageLogic';
+import { addNewTask, editTask } from '@/app-logic/appLocalStorageLogic';
 
 export default {
     name: 'TaskForm',
-    emits: [],
+    emits: ['closeModal'],
     props: {
         task: {
             type: Object,
@@ -77,7 +77,8 @@ export default {
                 let exStr;
 
                 if (this.localTask.deadEnd) {
-                    exStr = this.localTask.deadEnd.toISOString().split('T')[0];
+                    const deadEnd = new Date(this.task.deadEnd);
+                    exStr = deadEnd.toISOString().split('T')[0];
                 } else {
                     exStr = '';
                 }
@@ -91,8 +92,12 @@ export default {
     },
     methods: {
         saveBtnClick() {
-            console.log(this.taskStorage);
-            addNewTask(this.localTask, this.taskStorage);
+            if (Object.keys(this.task).length) {
+                editTask(this.localTask, this.taskStorage);
+            } else {
+                addNewTask(this.localTask, this.taskStorage);
+            }
+            this.$emit('closeModal');
         }
     },
 };
