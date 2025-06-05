@@ -29,6 +29,7 @@
 
 export default {
     name: 'ModalWindow',
+    emits: ['modalIsClosed'],
     data() {
         return {
             isVisible: false,
@@ -39,6 +40,7 @@ export default {
             this.isVisible = true;
         }, // метод показа модального окна
         hideModal() {
+            this.$emit('modalIsClosed');
             this.isVisible = false;
         }, // метод скрытия модального окна
     },

@@ -1,4 +1,4 @@
-// file with the logic of working with local storage
+// file with the logic of working with local storage and tasks
 
 import { ref, watch } from 'vue';
 

@@ -1,14 +1,16 @@
 <template>
-    <ModalWindow ref="modal">
+    <ModalWindow ref="modal" @modalIsClosed="hideInnerContent">
         <template #modal-content>
-            <TaskForm :task="{}" @closeModal="closeModalWindow"/>
+            <TaskForm v-if="isAddingTask" :task="{}" @closeModal="closeModalWindow"/>
+            <FilterAndSortForm v-if="isFiltering"/>
         </template>
     </ModalWindow><!--  component w teleport to index.html (modal form container)  -->
     <div id="main-content" class="container p-3">
         <h1 id="app-header" class="fs-1 text-uppercase fw-bold">Vue TO-DO app</h1>
         <AppHeaderBtnBlock
             @showInfo="showInfoBanner"
-            @addNewTask="showModalWindow"
+            @changeFilters="startSortingAndFiltering"
+            @addNewTask="startAddingTask"
         />
         <AppTaskWrap/>
     </div>
@@ -22,6 +24,7 @@ import AppTaskWrap from '@/components/AppTaskWrap.vue';
 import BannerWrap from '@/components/BannerWrap.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import TaskForm from '@/components/TaskForm.vue';
+import FilterAndSortForm from '@/components/FilterAndSortForm.vue';
 
 export default {
     name: 'MainAppView',
@@ -32,9 +35,13 @@ export default {
         BannerWrap,
         ModalWindow,
         TaskForm,
+        FilterAndSortForm,
     },
     data() {
-        return {};
+        return {
+            isAddingTask: false,
+            isFiltering: false,
+        };
     },
     methods: {
         showInfoBanner() {
@@ -44,7 +51,21 @@ export default {
         showModalWindow() {
             this.$refs.modal.showModal();
         },
+        startSortingAndFiltering() {
+            this.isFiltering = true;
+            this.showModalWindow();
+        },
+        startAddingTask() {
+            this.isAddingTask = true;
+            this.showModalWindow();
+        },
+        hideInnerContent() {
+            this.isAddingTask = false;
+            this.isFiltering = false;
+        },
         closeModalWindow() {
+            this.isAddingTask = false;
+            this.isFiltering = false;
             this.$refs.modal.hideModal();
         },
     },

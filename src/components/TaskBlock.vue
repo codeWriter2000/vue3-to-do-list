@@ -17,9 +17,7 @@
         </span>
     </div><!--  priority of task  -->
     <div class="col-12 text-center col-xxl-2">
-        <span class="">
-            {{ deadEndDate }}
-        </span>
+        <span :class="deadEndClass" v-html="deadEndDate"></span>
     </div><!--  date of create  -->
     <div id="btn-interface" class="col-12 text-center col-xxl-3 text-xxl-end">
         <button class="btn btn-outline-danger" @click="deleteMe">
@@ -32,7 +30,7 @@
             <img v-if="this.isShow" src="@/../public/icons/hide-icon.png" alt="hide" class="icon">
             <img v-else src="@/../public/icons/show-icon.png" alt="show" class="icon">
         </button><!--  show comment  -->
-        <button :class="['btn', isDone ? 'btn-success' : 'btn-outline-success']" @click="changeStatus"
+        <button class="btn btn-outline-success" @click="changeStatus"
         >
             <img src="@/../public/icons/done-icon.png" alt="done" class="icon">
         </button><!--  change status  -->
@@ -57,7 +55,7 @@ import TaskForm from '@/components/TaskForm.vue';
 
 import { inject } from 'vue';
 import { priorityDict } from '@/app-logic/staticData';
-import { delTask, changeTaskStatus } from '@/app-logic/appLocalStorageLogic';
+import { delTask, changeTaskStatus } from '@/app-logic/appTaskLogic';
 
 export default {
     name: 'TaskBlock',
@@ -110,7 +108,7 @@ export default {
 
             const now = new Date();
 
-            if (this.task.deadEnd) {
+            if (this.task.deadEnd && !this.task.status) {
                 const deadEnd = new Date(this.task.deadEnd);
 
                 const dateCondition = deadEnd.getDate() === now.getDate();
@@ -120,16 +118,35 @@ export default {
                 if (dateCondition && monthCondition && yearCondition) {
                     exStr = 'срок сегодня';
                 } else {
-                    exStr = `срок до ${deadEnd.toLocaleDateString('ru-RU', options)}`;
+                    if (deadEnd > now) {
+                        exStr = `срок до ${deadEnd.toLocaleDateString('ru-RU', options)}`;
+                    } else {
+                        exStr = `просрочена<br>${deadEnd.toLocaleDateString('ru-RU', options)}`;
+                    }
                 }
-            } else {
-                exStr = '-';
+            } else if (this.task.status) {
+                exStr = 'задача выполнена';
             }
 
             return exStr;
         }, // свойство вычисляющее конечную дату выполнения задачи (русская локаль)
         taskPriority() {
             return this.task.priority ? priorityDict[this.task.priority] : 'приоритет не задан';
+        },
+        deadEndClass() {
+            let exClassTxt;
+            const now = new Date();
+            if (this.task.deadEnd && !this.task.status) {
+                const deadEnd = new Date(this.task.deadEnd);
+                if (deadEnd < now) {
+                    exClassTxt = 'text-danger fw-bolder';
+                } else {
+                    exClassTxt = '';
+                }
+            } else if (this.task.status) {
+                exClassTxt = 'text-success fw-bolder';
+            }
+            return exClassTxt;
         }
     },
     methods: {

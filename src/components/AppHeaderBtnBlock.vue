@@ -12,7 +12,7 @@
             <img src="@/../public/icons/info-icon.png" alt="info" class="icon">
         </button><!--  info about app  -->
 
-        <button id="sort-btn" class="btn btn-outline-primary col col-lg-2 ms-auto fw-bold fs-6 shadow">
+        <button id="sort-btn" class="btn btn-outline-primary col col-lg-2 ms-auto fw-bold fs-6 shadow" @click="$emit('changeFilters')">
             Сортировка&ensp;
             <img src="@/../public/icons/sort-icon.png" alt="sort" class="icon">
         </button>
@@ -30,7 +30,7 @@
 
 export default {
     name: 'AppHeaderBlock',
-    emits: ['showInfo', 'addNewTask'],
+    emits: ['showInfo', 'changeFilters', 'addNewTask'],
     data() {
         return {
             theme: true,

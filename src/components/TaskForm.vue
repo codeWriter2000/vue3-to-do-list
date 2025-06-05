@@ -47,7 +47,7 @@
 
 import { inject } from 'vue';
 import { priorityDict } from '@/app-logic/staticData';
-import { addNewTask, editTask } from '@/app-logic/appLocalStorageLogic';
+import { addNewTask, editTask } from '@/app-logic/appTaskLogic';
 
 export default {
     name: 'TaskForm',
