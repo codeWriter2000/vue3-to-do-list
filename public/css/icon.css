@@ -1,3 +1,7 @@
 .icon {
     height: 1.3rem;
 }
+
+body[data-bs-theme='dark'] .icon {
+    filter: invert(1) brightness(2);
+}

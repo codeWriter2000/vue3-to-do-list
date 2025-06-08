@@ -30,16 +30,47 @@
 
 export default {
     name: 'AppHeaderBlock',
-    emits: ['showInfo', 'changeFilters', 'addNewTask'],
+    emits: ['themeChanged', 'showInfo', 'changeFilters', 'addNewTask'],
+    setup() {
+        const themeKey = 'toDoAppTheme';
+        const localTheme = localStorage.getItem(themeKey);
+        const defaultVal = true;
+
+        if (localTheme === null) {
+            localStorage.setItem(themeKey, JSON.stringify(defaultVal)); // light theme initializing
+        }
+
+        const boolTheme = localTheme ? JSON.parse(localTheme) : defaultVal;
+        return { themeKey, boolTheme };
+    },
     data() {
         return {
-            theme: true,
+            theme: this.boolTheme,
         };
     },
     methods: {
         changeTheme() {
+            const body = document.getElementsByTagName('body')[0];
+            if (this.theme) {
+                // this.theme === true -> light theme
+                localStorage.setItem(this.themeKey, JSON.stringify(false));
+                body.setAttribute('data-bs-theme', 'dark');
+            } else {
+                // this.theme === false -> dark theme
+                localStorage.setItem(this.themeKey, JSON.stringify(true));
+                body.removeAttribute('data-bs-theme');
+            }
             this.theme = !this.theme;
+            this.$emit('themeChanged');
         },
+    },
+    mounted() {
+        const body = document.getElementsByTagName('body')[0];
+        if (!this.theme) {
+            body.setAttribute('data-bs-theme', 'dark');
+        } else {
+            body.removeAttribute('data-bs-theme');
+        }
     },
 };
 

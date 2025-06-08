@@ -74,8 +74,6 @@ export default {
 
             for (let i = 0; i < this.localTaskList.length; i += 1) {
                 let task = this.localTaskList[i];
-                console.log(task);
-                console.log(`this.isVisible(task) = ${this.isVisible(task)}`);
                 if (this.isVisible(task)) {
                     exList.push(task);
                 }

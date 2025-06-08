@@ -8,6 +8,7 @@
     <div id="main-content" class="container p-3">
         <h1 id="app-header" class="fs-1 text-uppercase fw-bold">Vue TO-DO app</h1>
         <AppHeaderBtnBlock
+            @themeChanged="this.$refs.banner.showBanner('Тема приложения изменена')"
             @showInfo="showInfoBanner"
             @changeFilters="startSortingAndFiltering"
             @addNewTask="startAddingTask"

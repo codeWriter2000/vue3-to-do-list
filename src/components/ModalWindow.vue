@@ -4,7 +4,7 @@
 
     <div
         v-if="this.isVisible"
-        id="modal-window" class="container position-fixed top-50 start-50 w-50 translate-middle rounded shadow p-2 my-3 border border-primary bg-white"
+        id="modal-window" class="container position-fixed top-50 start-50 w-50 translate-middle rounded shadow p-2 my-3 border border-primary bg-body"
     >
         <div class="row align-items-center m-0 p-2">
             <div class="col text-center text-xxl-start p-1">

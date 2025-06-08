@@ -74,13 +74,14 @@ export default {
         },
         formattedDateOfDeadEnd: {
             get() {
-                let exStr;
+                let exStr = '';
+                const rawValue = this.task.deadEnd;
 
-                if (this.localTask.deadEnd) {
-                    const deadEnd = new Date(this.task.deadEnd);
-                    exStr = deadEnd.toISOString().split('T')[0];
-                } else {
-                    exStr = '';
+                if (rawValue) {
+                    const deadEnd = new Date(rawValue);
+                    if (!isNaN(deadEnd.getTime())) {
+                        exStr = deadEnd.toISOString().split('T')[0];
+                    }
                 }
                 
                 return exStr;
@@ -91,13 +92,30 @@ export default {
         },
     },
     methods: {
+        validateForm() {
+            let result;
+            const titleCondition = this.localTask.title ? true : false; // change flag when task has no title
+            const priorityCondition = this.localTask.priority ? true : false; // change flag when task has no priority
+            const deadEndCondition = this.localTask.deadEnd === null ? false : true; // change flag when task has no dead emd date
+            result = titleCondition && priorityCondition && deadEndCondition;
+            return result;
+        },
         saveBtnClick() {
             if (Object.keys(this.task).length) {
-                editTask(this.localTask, this.taskStorage);
+                if (this.validateForm()) {
+                    editTask(this.localTask, this.taskStorage);
+                    this.$emit('closeModal');
+                } else {
+                    alert('Форма ввода данных заполнена обрывочно! Укажите наименование, приоритет и срок выполнения задачи!');
+                }
             } else {
-                addNewTask(this.localTask, this.taskStorage);
+                if (this.validateForm()) {
+                    addNewTask(this.localTask, this.taskStorage);
+                    this.$emit('closeModal');
+                } else {
+                    alert('Форма ввода данных заполнена обрывочно! Укажите наименование, приоритет и срок выполнения задачи!');
+                }            
             }
-            this.$emit('closeModal');
         }
     },
 };
