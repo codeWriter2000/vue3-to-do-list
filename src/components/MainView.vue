@@ -1,7 +1,7 @@
 <template>
     <ModalWindow ref="modal" @modalIsClosed="hideInnerContent">
         <template #modal-content>
-            <TaskForm v-if="isAddingTask" :task="{}" @closeModal="closeModalWindow"/>
+            <TaskForm v-if="isAddingTask" :task="{}" @closeModal="closeModalWindow('Добавлена новая задача')"/>
             <FilterAndSortForm v-if="isFiltering"/>
         </template>
     </ModalWindow><!--  component w teleport to index.html (modal form container)  -->
@@ -64,10 +64,13 @@ export default {
             this.isAddingTask = false;
             this.isFiltering = false;
         },
-        closeModalWindow() {
+        closeModalWindow(bannerText) {
             this.isAddingTask = false;
             this.isFiltering = false;
             this.$refs.modal.hideModal();
+            if (bannerText) {
+                this.$refs.banner.showBanner(bannerText);
+            }
         },
     },
 };

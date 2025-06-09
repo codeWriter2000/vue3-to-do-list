@@ -30,6 +30,19 @@
                 </div>
             </div><!--  task status filters  -->
         </div><!--  filters  -->
+        <div class="row mx-2 mb-3">
+            <div id="sorting-title" class="col-12 text-center">
+                <span>Сортировка</span>
+            </div>
+            <div id="sorting-type-block" class="col-12 mt-2 text-start">
+                <label for="sorting-type-select" class="form-label col-12">
+                    Тип сортировки:
+                    <select id="sorting-type-select" class="form-select my-1" v-model="localSortingType" @change="changeSortingType">
+                        <option v-for="(item, idx) in sorting" :key="idx" :id="idx" :value="idx">{{ item }}</option>
+                    </select>
+                </label>
+            </div>
+        </div><!--  sorting type  -->
     </form>
 </div>
 
@@ -38,22 +51,29 @@
 <script>
 
 import { inject } from 'vue';
-import { priorityDict, taskStatusDict } from '@/app-logic/staticData';
+import { priorityDict, taskStatusDict, sortingTypesDict } from '@/app-logic/staticData';
 
 export default {
     name: 'FilteringAndSorting',
     setup() {
         const filterStorage = inject('filterStorage');
-        return { filterStorage }
+        const sortingStorage = inject('sortingStorage');
+        return { filterStorage, sortingStorage }
     },
     data() {
         return {
             taskPriority: priorityDict,
             taskStatus: taskStatusDict,
+            sorting: sortingTypesDict,
             localFilters: { ...this.filterStorage },
+            localSortingType: this.sortingStorage,
         };
     },
-    methods: {},
+    methods: {
+        changeSortingType() {
+            this.sortingStorage = this.localSortingType;
+        }
+    },
 };
 
 </script>

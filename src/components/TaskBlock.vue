@@ -1,8 +1,8 @@
 <template>
 
-<ModalWindow ref="modalEdit">
+<ModalWindow ref="modal">
     <template #modal-content>
-        <TaskForm :task="task" @closeModal="closeModalWindow"/>
+        <TaskForm :task="task" @closeModal="closeModalWindow('В существующую задачу внесены правки')"/>
     </template>
 </ModalWindow><!--  component w teleport to index.html (modal form container)  -->
 
@@ -45,6 +45,7 @@
         </p>
     </div>
 </div><!-- TaskBlock  -->
+<BannerWrap ref="banner"/><!--  component w teleport to index.html (modal info banner)  -->
 
 </template>
 
@@ -52,6 +53,7 @@
 
 import ModalWindow from '@/components/ModalWindow.vue';
 import TaskForm from '@/components/TaskForm.vue';
+import BannerWrap from '@/components/BannerWrap.vue';
 
 import { inject } from 'vue';
 import { priorityDict } from '@/app-logic/staticData';
@@ -59,7 +61,7 @@ import { delTask, changeTaskStatus } from '@/app-logic/appTaskLogic';
 
 export default {
     name: 'TaskBlock',
-    emits: [],
+    emits: ['goodbye'],
     props: {
         task: {
             type: Object,
@@ -69,6 +71,7 @@ export default {
     components: {
         ModalWindow,
         TaskForm,
+        BannerWrap,
     },
     setup() {
         const taskStorage = inject('taskStorage');
@@ -160,14 +163,18 @@ export default {
         deleteMe() {
             const decision = confirm(`Вы удаляете задачу с названием - ${this.task.title}`);
             if (decision) {
+                this.$emit('goodbye');
                 delTask(this.task.id, this.taskStorage);
             }
         }, // удаление задачи из local storage
         showModalWindow() {
-            this.$refs.modalEdit.showModal();
+            this.$refs.modal.showModal();
         },
-        closeModalWindow() {
-            this.$refs.modalEdit.hideModal();
+        closeModalWindow(bannerText) {
+            this.$refs.modal.hideModal();            
+            if (bannerText) {
+                this.$refs.banner.showBanner(bannerText);
+            }
         },
     },
 };

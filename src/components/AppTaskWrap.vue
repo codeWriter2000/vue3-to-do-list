@@ -8,8 +8,8 @@
     </div><!--  task header  -->
     <div id="task-container" class="row overflow-auto flex-grow-1 py-2 px-2 el-w-scroll">
         <div v-if="localTaskList.length">
-            <div v-if="filteredTasks.length">
-                <TaskBlock v-for="(item, idx) in filteredTasks" :key="idx" :task="item" :id="item.id"/>
+            <div v-if="filteredAndSortedTasks.length">
+                <TaskBlock v-for="(item, idx) in filteredAndSortedTasks" :key="idx" :task="item" :id="item.id" @goodbye="showMsgAboutDeletedTask"/>
             </div>
             <div v-else>
                 <p class="fs-4 fw-bolder fst-italic text-center mt-5">
@@ -25,22 +25,28 @@
     </div><!--  task container  -->
 </div><!--  AppTaskWrap  -->
 
+<BannerWrap ref="banner"/><!--  component w teleport to index.html (modal info banner)  -->
+
 </template>
 
 <script>
 
 import { inject } from 'vue';
+import { sortTaskList } from '@/app-logic/appSortAndFilterLogic'
 import TaskBlock from '@/components/TaskBlock.vue';
+import BannerWrap from '@/components/BannerWrap.vue';
 
 export default {
     name: 'AppTaskWrap',
     components: {
         TaskBlock,
+        BannerWrap
     },
     setup() {
         const taskStorage = inject('taskStorage');
         const filterStorage = inject('filterStorage');
-        return { taskStorage, filterStorage };
+        const sortingStorage = inject('sortingStorage');
+        return { taskStorage, filterStorage, sortingStorage };
     },
     data() {
         return {
@@ -67,9 +73,12 @@ export default {
 
             return decision
         },
+        showMsgAboutDeletedTask() {
+            this.$refs.banner.showBanner('Задача безвозвратно удалена!');
+        },
     },
     computed: {
-        filteredTasks() {
+        filteredAndSortedTasks() {
             let exList = [];
 
             for (let i = 0; i < this.localTaskList.length; i += 1) {
@@ -77,6 +86,10 @@ export default {
                 if (this.isVisible(task)) {
                     exList.push(task);
                 }
+            }
+
+            if (exList.length) {
+                exList = sortTaskList(exList, this.sortingStorage);
             }
 
             return exList;
