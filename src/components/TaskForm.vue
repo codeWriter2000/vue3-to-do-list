@@ -75,7 +75,7 @@ export default {
         formattedDateOfDeadEnd: {
             get() {
                 let exStr = '';
-                const rawValue = this.task.deadEnd;
+                const rawValue = this.localTask.deadEnd;
 
                 if (rawValue) {
                     const deadEnd = new Date(rawValue);

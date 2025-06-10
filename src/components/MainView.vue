@@ -3,6 +3,7 @@
         <template #modal-content>
             <TaskForm v-if="isAddingTask" :task="{}" @closeModal="closeModalWindow('Добавлена новая задача')"/>
             <FilterAndSortForm v-if="isFiltering"/>
+            <AppAboutComponent v-if="isAboutInfo" @closeModal="closeModalWindow"/>
         </template>
     </ModalWindow><!--  component w teleport to index.html (modal form container)  -->
     <div id="main-content" class="container p-3">
@@ -26,6 +27,7 @@ import BannerWrap from '@/components/BannerWrap.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import TaskForm from '@/components/TaskForm.vue';
 import FilterAndSortForm from '@/components/FilterAndSortForm.vue';
+import AppAboutComponent from '@/components/AppAboutComponent.vue';
 
 export default {
     name: 'MainAppView',
@@ -37,20 +39,22 @@ export default {
         ModalWindow,
         TaskForm,
         FilterAndSortForm,
+        AppAboutComponent,
     },
     data() {
         return {
             isAddingTask: false,
             isFiltering: false,
+            isAboutInfo: false,
         };
     },
     methods: {
-        showInfoBanner() {
-            const info = 'Информация';
-            this.$refs.banner.showBanner(info);
-        },
         showModalWindow() {
             this.$refs.modal.showModal();
+        },
+        showInfoBanner() {
+            this.isAboutInfo = true;
+            this.showModalWindow();
         },
         startSortingAndFiltering() {
             this.isFiltering = true;
@@ -63,10 +67,12 @@ export default {
         hideInnerContent() {
             this.isAddingTask = false;
             this.isFiltering = false;
+            this.isAboutInfo = false;
         },
         closeModalWindow(bannerText) {
             this.isAddingTask = false;
             this.isFiltering = false;
+            this.isAboutInfo = false;
             this.$refs.modal.hideModal();
             if (bannerText) {
                 this.$refs.banner.showBanner(bannerText);
